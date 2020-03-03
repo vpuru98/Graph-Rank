@@ -33,10 +33,9 @@ class Graph:
                 sinks.append(vertex_code)
         return sinks
 
-    def get_ranks(self, num_iterations):
+    def get_ranks(self, num_iterations, d):
         ranks = dict([(i, 1 / self.size) for i in self.inverse_mapping])
         sinks = self.get_sinks()
-        d = 0.85
         iteration = 0
         while iteration < num_iterations:
             new_ranks = {}
@@ -48,8 +47,8 @@ class Graph:
             iteration += 1
         return ranks
 
-    def rank(self, num_iterations=50):
-        ranks = self.get_ranks(num_iterations)
+    def rank(self, num_iterations=50, d=0.85):
+        ranks = self.get_ranks(num_iterations, d)
         ranking = dict([(self.inverse_mapping[i], ranks[i]) for i in ranks])
         return ranking
 

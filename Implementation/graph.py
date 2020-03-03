@@ -19,8 +19,10 @@ class Graph:
             for i in self.inverse_mapping])
         for edge in edges:
             assert edge[0] in self.mapping and edge[1] in self.mapping
-            assert self.mapping[edge[0]] not in self.adjacancy_list[self.mapping[edge[1]]]['adjacancies']
-            self.adjacancy_list[self.mapping[edge[1]]]['adjacancies'][self.mapping[edge[0]]] = float(edge[2])
+            if self.mapping[edge[0]] not in self.adjacancy_list[self.mapping[edge[1]]]['adjacancies']:
+                self.adjacancy_list[self.mapping[edge[1]]]['adjacancies'][self.mapping[edge[0]]] = [float(edge[2])]
+            else:
+                self.adjacancy_list[self.mapping[edge[1]]]['adjacancies'][self.mapping[edge[0]]].append(float(edge[2]))
             self.adjacancy_list[self.mapping[edge[0]]]['forward_weight_sum'] += float(edge[2])
             self.adjacancy_list[self.mapping[edge[1]]]['in_links'] += 1
             self.adjacancy_list[self.mapping[edge[0]]]['out_links'] += 1
@@ -41,8 +43,8 @@ class Graph:
             for i in self.inverse_mapping:
                 random_jump_contrib = (1 - d) / self.size
                 sink_contrib = d * sum([ranks[sink] / self.size for sink in sinks])
-                adjacancy_contrib = d * sum([ranks[adjacant_vertex_code] * (self.adjacancy_list[i]
-                    ['adjacancies'][adjacant_vertex_code] / self.adjacancy_list[adjacant_vertex_code]
+                adjacancy_contrib = d * sum([ranks[adjacant_vertex_code] * (sum(self.adjacancy_list[i]
+                    ['adjacancies'][adjacant_vertex_code]) / self.adjacancy_list[adjacant_vertex_code]
                     ['forward_weight_sum']) for adjacant_vertex_code in self.adjacancy_list[i]['adjacancies']])
                 new_ranks[i] = random_jump_contrib + sink_contrib + adjacancy_contrib
             ranks = new_ranks

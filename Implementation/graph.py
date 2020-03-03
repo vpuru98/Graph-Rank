@@ -5,7 +5,7 @@ class Graph:
         self.size = len(vertices)
         self.init_mappings(vertices)
         self.init_adjacancy_list(edges)
-        self.init_forward_link_counts()
+
 
     def init_mappings(self, vertices):
         self.mapping = {}
@@ -15,22 +15,21 @@ class Graph:
             self.inverse_mapping[i] = vertex
 
     def init_adjacancy_list(self, edges):
-        self.adjacancy_list = dict([(i, []) for i in self.inverse_mapping])
+        self.adjacancy_list = dict([(i, {'forward_weight_sum': 0, 'in_links': 0, 'out_links': 0, 'adjacancies': {}}) 
+            for i in self.inverse_mapping])
         for edge in edges:
             assert edge[0] in self.mapping and edge[1] in self.mapping
-            self.adjacancy_list[self.mapping[edge[1]]].append(self.mapping[edge[0]])
-
-    def init_forward_link_counts(self):
-        self.forward_links = dict([(i, 0) for i in self.inverse_mapping])
-        for vertex_code in self.adjacancy_list:
-            for adjacant_vertex_code in self.adjacancy_list[vertex_code]:
-                self.forward_links[adjacant_vertex_code] += 1
+            assert self.mapping[edge[0]] not in self.adjacancy_list[self.mapping[edge[1]]]['adjacancies']
+            self.adjacancy_list[self.mapping[edge[1]]]['adjacancies'][self.mapping[edge[0]]] = float(edge[2])
+            self.adjacancy_list[self.mapping[edge[0]]]['forward_weight_sum'] += float(edge[2])
+            self.adjacancy_list[self.mapping[edge[1]]]['in_links'] += 1
+            self.adjacancy_list[self.mapping[edge[0]]]['out_links'] += 1
 
     def get_sinks(self):
         sinks = []
-        for vertex_code in self.forward_links:
-            if self.forward_links[vertex_code] == 0 and len(self.adjacancy_list[vertex_code]) > 0:
-                sinks.append(vertex_code)
+        for vertex in self.adjacancy_list:
+            if self.adjacancy_list[vertex]['in_links'] > 0 and self.adjacancy_list[vertex]['out_links'] == 0:
+                sinks.append(vertex)
         return sinks
 
     def get_ranks(self, num_iterations, d):
@@ -40,9 +39,12 @@ class Graph:
         while iteration < num_iterations:
             new_ranks = {}
             for i in self.inverse_mapping:
-                new_ranks[i] = ((1 - d) / self.size + d * sum([ranks[adjacant_vertex_code] / self.forward_links
-                    [adjacant_vertex_code] for adjacant_vertex_code in self.adjacancy_list[i]]) + d * sum([ranks[sink] /
-                        self.size for sink in sinks]))
+                random_jump_contrib = (1 - d) / self.size
+                sink_contrib = d * sum([ranks[sink] / self.size for sink in sinks])
+                adjacancy_contrib = d * sum([ranks[adjacant_vertex_code] * (self.adjacancy_list[i]
+                    ['adjacancies'][adjacant_vertex_code] / self.adjacancy_list[adjacant_vertex_code]
+                    ['forward_weight_sum']) for adjacant_vertex_code in self.adjacancy_list[i]['adjacancies']])
+                new_ranks[i] = random_jump_contrib + sink_contrib + adjacancy_contrib
             ranks = new_ranks
             iteration += 1
         return ranks
@@ -55,7 +57,8 @@ class Graph:
 
 if __name__ == '__main__':
     vertices_list = ['A', 'B', 'C', 'D', 'E', 'F', 1, 2, 3, 4, 5]
-    edges_list = [('D', 'A'), ('D', 'B'), ('E', 'B'), ('F', 'B'), ('C', 'B'), (1, 'B'), (2, 'B'), (3, 'B'), ('B', 'C'),
-                  ('E', 'D'), ('F', 'E'), (1, 'E'), (2, 'E'), (3, 'E'), (4, 'E'), (5, 'E'), ('E', 'F')]
+    edges_list = [('D', 'A', 1), ('D', 'B', 1), ('E', 'B', 1), ('F', 'B', 1), ('C', 'B', 1), (1, 'B', 1), 
+        (2, 'B', 1), (3, 'B', 1), ('B', 'C', 1), ('E', 'D', 1), ('F', 'E', 1), (1, 'E', 1), (2, 'E', 1), 
+        (3, 'E', 1), (4, 'E', 1), (5, 'E', 1), ('E', 'F', 1)]
     graph = Graph(vertices_list, edges_list)
     print(graph.rank())

@@ -29,6 +29,27 @@ Graph-Rank is applied to solve the trivial problem of identifying the most popul
 ### Station Ranking
 Graph-Rank is used to solve the problem of finding the busiest railway stations of India. The railway network for this problem consisted of over <b>8000</b> stations and over <b>10000</b> trains. The results are summarized below.
 
-![](screenshot.jpg)
+
+    1.  HOWRAH JN : 0.0032299914
+    2.  NEW DELHI : 0.0019528751
+    3.  SEALDAH : 0.0019370082
+    4.  THANE : 0.0018996189
+    5.  DELHI : 0.0018904029
+    6.  VIJAYAWADA JN : 0.001728963
+    7.  AHMEDABAD JN : 0.001698128
+    8.  KANPUR CENTRAL : 0.0016731561
+    9.  H NIZAMUDDIN : 0.0016620263
+    10. LUCKNOW NR : 0.0016309597
+    11. C SHIVAJI MAH T : 0.0015898468
+    12. KALYAN JN : 0.0015394498
+    13. PUNE JN : 0.0015036637
+    14. GORAKHPUR JN : 0.001480323
+    15. BORIVALI : 0.0014553636
+    16. AMBALA CANT JN : 0.0014540411
+    17. PATNA JN : 0.001433949
+    18. BARDDHAMAN JN : 0.0014216573
+    19. VISAKHAPATNAM : 0.0014024297
+    20. VARANASI JN : 0.0013835786
+
 
 The datasets used for solving this problem are credited to [Ayush Dubey](https://github.com/ayushdubey003/) 

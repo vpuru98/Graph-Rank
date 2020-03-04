@@ -15,6 +15,8 @@ Specifically, Graph-Rank computes the value <b>R</b> for each node of the graph
 
 where <b>N</b> is the number of nodes within the graph, <b>W(v, u)</b> is the weight associated with an edge from v to u, <b>S(v)</b> is the sum of the weights of all outgoing edges from v, and <b>D</b> is a number between 0 and 1.
 
+<i>Note: An extra correction term is further added to the above formula for dealing with the sink nodes of a graph. </i>
+
 ### The Random Surfer 
 One way to get a rough understanding of the rank values computed by Graph-Rank is to think about a random surfer who travels throughout a graph by making random decisions. 
 Every time the random surfer arrives at a node of the graph, it randomly chooses an outgoing edge of this node to move to a different node of the graph. 
